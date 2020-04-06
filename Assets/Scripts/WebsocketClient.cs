@@ -9,8 +9,10 @@ public class WebsocketClient : MonoBehaviour {
     private WebSocket ws;
     private int counter = 1;
     private bool connected = false;
+    private bool startDependents = false;
     public Dictionary<string, string> messages = new Dictionary<string, string>();
     public string ip_address;
+    public GameObject[] dependents;
 
     // Connect happens in Awake so it is finished before other GameObjects are made
     void Awake() {
@@ -40,6 +42,13 @@ public class WebsocketClient : MonoBehaviour {
         string msg = "{\"op\":\"subscribe\",\"id\":\"subscribe:/" + topic + ":" + counter + "\",\"type\":\"" + type + "\",\"topic\":\"/" + topic + "\",\"throttle_rate\":" + throttle_rate.ToString() + ",\"queue_length\":0}";
         Debug.Log(msg);
         ws.Send(msg);
+        counter++;
+    }
+
+    public void Subscribe(string topic, string type, int throttle_rate, Action<bool> complete) {
+        string msg = "{\"op\":\"subscribe\",\"id\":\"subscribe:/" + topic + ":" + counter + "\",\"type\":\"" + type + "\",\"topic\":\"/" + topic + "\",\"throttle_rate\":" + throttle_rate.ToString() + ",\"queue_length\":0}";
+        Debug.Log(msg);
+        ws.SendAsync(msg, complete);
         counter++;
     }
 
@@ -80,6 +89,7 @@ public class WebsocketClient : MonoBehaviour {
     private void OnOpenHandler(object sender, System.EventArgs e) {
         Debug.Log("WebSocket connected!");
         connected = true;
+        startDependents = true;
     }
 
     private void OnCloseHandler(object sender, CloseEventArgs e) {
@@ -92,6 +102,15 @@ public class WebsocketClient : MonoBehaviour {
 
     public bool IsConnected() {
         return connected;
+    }
+
+    void Update() {
+        if (startDependents) {
+            foreach (GameObject dependent in dependents) {
+                dependent.SetActive(true);
+            }
+            startDependents = false;
+        }
     }
 }
 
