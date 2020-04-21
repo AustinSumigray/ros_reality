@@ -82,3 +82,5 @@ $RECYCLE.BIN/
 
 # Visual Studio cache/options directory
 .vs/
+*.meta
+Library\metadata

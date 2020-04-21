@@ -10,8 +10,8 @@ public class URDFParser : MonoBehaviour {
     Dictionary<string, GameObject> robotParts;
 
     public string xmlPath;
-    string relativePath = "URDFs/Baxter/";
-
+    string relativePath = "movo_description/meshes/";
+    //string relativePath = "";
     public GameObject root;
 
 
@@ -33,6 +33,7 @@ public class URDFParser : MonoBehaviour {
                                                                                                                  //Debug.Log(meshfile);
 
                 Debug.Log(meshfile);
+                //meshfile = "vector_base";
                 instance = Instantiate(Resources.Load(meshfile, typeof(GameObject))) as GameObject;
                 instance.name = pair.Key;
             }
@@ -118,12 +119,15 @@ public class URDFParser : MonoBehaviour {
                 if (jointComp.Name == "origin") { //Found the visual component
                                                   //Debug.Log("origin found!");
                     string[] rpyVals = jointComp.Attributes["rpy"].Value.Split(delims);
+                    print("Val0: " + rpyVals[0] + "Val1: " + rpyVals[1] + "Val2: " + rpyVals[2]);
                     jo_rpy = new Vector3(float.Parse(rpyVals[0]), float.Parse(rpyVals[1]), float.Parse(rpyVals[2]));
                     jo_rpyF = true;
 
                     //lo_rpy = visualComp.Attributes ["rpy"].Value;
                     //Debug.Log (visualComp.Attributes ["xyz"].Value);
                     string[] xyzVals = jointComp.Attributes["xyz"].Value.Split(delims);
+                    print("jname: " + jname);
+                    print("0: " + xyzVals[0] + " 1: " + xyzVals[1] + " 2: " + xyzVals[2]);
                     jo_xyz = new Vector3(float.Parse(xyzVals[0]), float.Parse(xyzVals[1]), float.Parse(xyzVals[2]));
                     jo_xyzF = true;
                 }

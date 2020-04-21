@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using WebSocketSharp;
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 
@@ -11,12 +12,19 @@ public class WebsocketClient : MonoBehaviour {
     private bool connected = false;
     private bool startDependents = false;
     public Dictionary<string, string> messages = new Dictionary<string, string>();
-    public string ip_address;
+    private string ip_address;
+    public string ip_file;
     public GameObject[] dependents;
 
     // Connect happens in Awake so it is finished before other GameObjects are made
     void Awake() {
         Debug.Log("instantiating websocket");
+
+        //Read the text from directly from the test.txt file
+        StreamReader reader = new StreamReader(ip_file);
+        ip_address = reader.ReadToEnd();
+        Debug.Log(ip_address);
+        reader.Close();
         ws = new WebSocket(ip_address);
 
         ws.OnOpen += OnOpenHandler;
